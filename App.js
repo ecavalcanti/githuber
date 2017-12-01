@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { AsyncStorage, Text } from 'react-native'
-import './src/config/ReactotronConfig'
-import createRootNavigator from './src/routes'
+import { AsyncStorage } from 'react-native'
+import 'config/ReactotronConfig'
+import createRootNavigator from 'routes'
 
 export default class App extends Component {
   state = {

@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 
 import styles from './styles'
 
-import api from '../../services/api'
+import api from 'services/api'
 
 export default class Welcome extends Component {
   static propTypes = {
@@ -32,7 +32,7 @@ export default class Welcome extends Component {
 
   checkAndSaveUser = async () => {
     const response = await api.get(`/users/${this.state.username}`)
-    
+    console.tron.log(response)
     if (!response.ok) throw Error()
 
     await AsyncStorage.setItem('@Githuber:username', this.state.username)
