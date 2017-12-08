@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { 
+  View,
+  AsyncStorage,
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  Text
+} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Repository from './components/Repository'
+import api from 'services/api'
 
 import styles from './styles'
 
@@ -12,13 +20,53 @@ export default class Repositories extends Component {
     )
   }
   
+  state = {
+    respositories: [],
+    loading: false,
+    refreshing: false
+  }
+
+  async componentWillMount() {
+    this.setState({ loading: true })
+    await this.loadRepositories()
+    this.setState({ loading: false })
+  }
+
+  loadRepositories = async () => {
+    this.setState({ refreshing: true })
+    const username = await AsyncStorage.getItem('@Githuber:username')
+    const response = await api.get(`/users/${username}/repos`)
+
+    this.setState({ repositories: response.data, refreshing: false })
+  }
+
+  renderRepositories = () => (
+    <FlatList
+      refreshControl={
+        <RefreshControl 
+          refreshing = {this.state.refreshing}
+          onRefresh = {this.loadRepositories}
+        />
+      }
+      data={this.state.repositories}
+      keyExtractor={repository => repository.id}
+      renderItem={({ item }) => <Repository repository={item} />}
+      />
+  )
+
+  renderList = () => (
+    this.state.repositories.length
+    ? this.renderRepositories()
+    : <Text style={styles.empty}>Nenhum repositório encontrado</Text>
+  )
+
   render() {
     return (
       <View style={styles.container}>
-        <Repository />
-        <Repository />
-        <Repository />
-        <Repository />
+        { this.state.loading 
+          ? <ActivityIndicator size="small" color="#999" style={styles.loading}/>
+          : this.renderList()
+        }
       </View>       
     )
   }
