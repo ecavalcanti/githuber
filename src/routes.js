@@ -15,6 +15,8 @@ const createRootNavigator = (userExist) => StackNavigator({
       Repositories: { screen: Repositories },
       Organizations: { screen: Organizations }
     }, {
+      swipeEnabled: true,
+      animationEnabled: true,
       tabBarPosition: 'bottom',
       tabBarOptions: {
         showLabel: false,
